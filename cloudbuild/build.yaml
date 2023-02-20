@@ -1,0 +1,48 @@
+# Required substitutions
+# _REGION: region of cloud run service
+# _IMAGE: image name
+# _SERVICE_NAME: run service name
+
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/${_IMAGE}', '.']
+
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/${_IMAGE}']
+
+  # Deploy container image to Cloud Run without traffics
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--platform'
+      - 'managed'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/${_IMAGE}'
+      - '--region'
+      - '${_REGION}'
+      - '--no-traffic'
+      - '--tag'
+      - 'latest'
+
+  # Update traffics to latest tagged revision
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'services'
+      - 'update-traffic'
+      - '${_SERVICE_NAME}'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/${_IMAGE}'
+      - '--region'
+      - '${_REGION}'
+      - ' --to-tags'
+      - 'latest=100'
+
+images:
+  - gcr.io/$PROJECT_ID/$IMAGE
