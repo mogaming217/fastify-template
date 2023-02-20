@@ -1,14 +1,14 @@
 name: APIServerIntegration
 on:
   push:
-    paths:
-      - 'src/**'
-      - 'tests/**'
-      - '.github/workflows/api-integration.yaml'
-      - 'package.json'
-      - 'package-lock.json'
-    tags-ignore:
-      - '*'
+    # paths:
+    #   - 'src/**'
+    #   - 'tests/**'
+    #   - '.github/workflows/api-integration.yaml'
+    #   - 'package.json'
+    #   - 'package-lock.json'
+    # tags-ignore:
+    #   - '*'
 
 jobs:
   integration:
@@ -27,6 +27,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
+
+      - run: npm install
       - run: npm run lint
       - run: npm run check:types
       - run: npm run test
