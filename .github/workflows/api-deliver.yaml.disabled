@@ -1,0 +1,29 @@
+name: Deliver app to dev
+on:
+  push:
+    branches:
+      - development
+
+env:
+  PROJECT_ID: YOUR_VALUE
+  DOCKER_IMAGE_NAME: YOUR_VALUE
+  REGION: YOUR_VALUE
+  RUN_SERVICE_NAME: YOUR_VALUE
+  GCP_CREDENTIALS: '${{ secrets.DEV_GCP_CREDENTIALS }}'
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ env.GCP_CREDENTIALS }}'
+
+      # Build the Docker image
+      - name: Submit to Cloud Build
+        run: |-
+          gcloud builds submit --config=cloudbuild/build.yaml --substitutions=_IMAGE="$DOCKER_IMAGE_NAME",_REGION="$REGION",_SERVICE_NAME="$RUN_SERVICE_NAME",_IMAGE_TAG="$GITHUB_SHA" .
