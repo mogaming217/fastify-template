@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "check:types": "tsc --noEmit",
-    "build": "rm -rf build && esbuild `find src \\( -name '*.ts' \\)` --platform=node --outdir=dist --bundle",
+    "build": "rm -rf dist && esbuild `find src \\( -name '*.ts' \\)` --platform=node --outdir=dist --bundle",
     "start": "npm run build && node dist",
     "test": "vitest",
     "lint": "eslint --ext .ts ."
