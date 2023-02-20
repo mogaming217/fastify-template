@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
+    "check:types": "tsc --noEmit",
     "build": "rm -rf build && esbuild `find src \\( -name '*.ts' \\)` --platform=node --outdir=build --bundle",
     "start": "npm run build && node build"
   },
@@ -15,8 +16,15 @@
   },
   "devDependencies": {
     "@types/node": "^18.14.0",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "eslint": "^8.9.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.25.4",
     "esbuild": "^0.17.9",
     "nodemon": "^2.0.20",
+    "prettier": "^2.8.4",
+    "prettier-plugin-organize-imports": "^3.2.2",
     "typescript": "^4.9.5"
   }
 }
