@@ -1,0 +1,54 @@
+name: APIServerIntegration
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/api-integration.yaml'
+      - 'package.json'
+      - 'package-lock.json'
+    tags-ignore:
+      - '*'
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    env:
+      APP_ENV: local
+      GCLOUD_PROJECT: local
+      IS_CI: true
+      NODE_OPTIONS: '--max_old_space_size=4096'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('apiServer/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - run: npm install
+        working-directory: ./apiServer
+
+      - run: npm run gql:codegen
+        working-directory: ./apiServer
+
+      - run: npm run build
+        working-directory: ./apiServer
+
+      - run: npm run lint
+        working-directory: ./apiServer
+
+      - run: npm run test
+        working-directory: ./apiServer
