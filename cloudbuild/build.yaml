@@ -2,15 +2,16 @@
 # _REGION: region of cloud run service
 # _IMAGE: image name
 # _SERVICE_NAME: run service name
+# _IMAGE_TAG: image tag
 
 steps:
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/${_IMAGE}:$COMMIT_SHA', '.']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/${_IMAGE}:${_IMAGE_TAG}', '.']
 
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/${_IMAGE}:$COMMIT_SHA']
+    args: ['push', 'gcr.io/$PROJECT_ID/${_IMAGE}:${_IMAGE_TAG}']
 
   # Deploy container image to Cloud Run without traffics
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -22,9 +23,10 @@ steps:
       - '--platform'
       - 'managed'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/${_IMAGE}:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/${_IMAGE}:${_IMAGE_TAG}'
       - '--region'
       - '${_REGION}'
+      - '--allow-unauthenticated'
       - '--no-traffic'
       - '--tag'
       - 'latest'
@@ -38,11 +40,11 @@ steps:
       - 'update-traffic'
       - '${_SERVICE_NAME}'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/${_IMAGE}:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/${_IMAGE}:${_IMAGE_TAG}'
       - '--region'
       - '${_REGION}'
       - ' --to-tags'
       - 'latest=100'
 
 images:
-  - gcr.io/$PROJECT_ID/${_IMAGE}:$COMMIT_SHA
+  - gcr.io/$PROJECT_ID/${_IMAGE}:${_IMAGE_TAG}
