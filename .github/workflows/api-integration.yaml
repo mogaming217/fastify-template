@@ -1,14 +1,14 @@
 name: APIServerIntegration
 on:
   push:
-    paths:
-      - 'src/**'
-      - 'tests/**'
-      - '.github/workflows/api-integration.yaml'
-      - 'package.json'
-      - 'package-lock.json'
-    tags-ignore:
-      - '*'
+    # paths:
+    #   - 'src/**'
+    #   - 'tests/**'
+    #   - '.github/workflows/api-integration.yaml'
+    #   - 'package.json'
+    #   - 'package-lock.json'
+    # tags-ignore:
+    #   - '*'
 
 jobs:
   integration:
