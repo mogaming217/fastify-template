@@ -30,6 +30,10 @@ steps:
       - '--no-traffic'
       - '--tag'
       - 'latest'
+      - '--update-secrets'
+      - 'SAMPLE_VALUE=projects/$PROJECT_NUMBER/secrets/SAMPLE:latest'
+      # 複数の場合
+      # - 'SAMPLE_VALUE=projects/$PROJECT_NUMBER/secrets/SAMPLE:latest,SAMPLE_VALUE2=projects...'
 
   # Update traffics to latest tagged revision
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -39,12 +43,12 @@ steps:
       - 'services'
       - 'update-traffic'
       - '${_SERVICE_NAME}'
-      - '--image'
-      - 'gcr.io/$PROJECT_ID/${_IMAGE}:${_IMAGE_TAG}'
       - '--region'
       - '${_REGION}'
-      - ' --to-tags'
-      - 'latest=100'
+      - '--to-latest'
 
 images:
   - gcr.io/$PROJECT_ID/${_IMAGE}:${_IMAGE_TAG}
+
+options:
+  logging: CLOUD_LOGGING_ONLY
