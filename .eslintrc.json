@@ -23,5 +23,5 @@
     "@typescript-eslint/no-var-requires": "off",
     "no-case-declarations": "off"
   },
-  "ignorePatterns": ["src/**/*.test.ts"]
+  "ignorePatterns": ["tests/**/*.test.ts"]
 }
