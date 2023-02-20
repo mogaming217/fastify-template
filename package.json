@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "env-cmd -f env/.env.local nodemon",
     "check:types": "tsc --noEmit",
     "build": "rm -rf dist && esbuild `find src \\( -name '*.ts' \\)` --platform=node --outdir=dist --bundle",
     "start": "npm run build && node dist",
@@ -20,6 +20,7 @@
     "@types/node": "^18.14.0",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
+    "env-cmd": "^10.1.0",
     "esbuild": "^0.17.9",
     "eslint": "^8.9.0",
     "eslint-config-prettier": "^8.6.0",
